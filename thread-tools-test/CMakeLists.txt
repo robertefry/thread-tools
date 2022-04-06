@@ -2,7 +2,7 @@
 cmake_minimum_required(VERSION 3.5)
 
 # Define binary
-set(BINARY_NAME "thread-tools-tests")
+set(BINARY_NAME "thread-tools-test")
 add_executable(${BINARY_NAME} "")
 
 # Define compiler configuration
