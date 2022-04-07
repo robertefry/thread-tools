@@ -48,6 +48,8 @@ namespace thd
         };
         async access() const;
 
+        std::mutex& mutex();
+
         void notify_one();
         void notify_all();
 
@@ -75,6 +77,11 @@ namespace thd
     inline wait_lock::async wait_lock::access() const
     {
         return async{m_DataPtr};
+    }
+
+    inline std::mutex& wait_lock::mutex()
+    {
+        return m_DataPtr->m_Mutex;
     }
 
     inline void wait_lock::notify_one()
