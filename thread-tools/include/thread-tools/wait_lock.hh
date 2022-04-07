@@ -46,7 +46,7 @@ namespace thd
         private:
             std::weak_ptr<data> m_DataPtr;
         };
-        async access();
+        async access() const;
 
         void notify_one();
         void notify_all();
@@ -72,7 +72,7 @@ namespace thd
 
 // thd::wait_lock
 
-    inline wait_lock::async wait_lock::access()
+    inline wait_lock::async wait_lock::access() const
     {
         return async{m_DataPtr};
     }
