@@ -5,6 +5,19 @@
 
 include(${CMAKE_CURRENT_LIST_DIR}/get_cpm.cmake)
 
+# ---- compiler cache ----
+# This enables CCACHE support through the use of the USE_CCACHE CMake variable
+# as a boolean.
+
+set(USE_CCACHE ON CACHE BOOL "Use ccache compilation cache")
+
+if(USE_CCACHE)
+  # See https://github.com/TheLartians/Ccache.cmake for more info.
+  CPMAddPackage(
+    GITHUB_REPOSITORY "TheLartians/Ccache.cmake" GIT_TAG "v1.2.4")
+
+endif()
+
 # ---- clang-tidy ----
 # This enables clang-tidy static analysis through the use of the USE_CLANG_TIDY
 # CMake variabe as a boolean.
