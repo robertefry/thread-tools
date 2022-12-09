@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.6)
+cmake_minimum_required(VERSION 3.7.2)
 
 # ---- project ----
 
@@ -24,8 +24,9 @@ CPMAddPackage(NAME "googletest"
 )
 
 # ---- project units ----
-# FIXME: change to match your project compilation units
+include(.cmake/tools.cmake) # toolkit for buildsystem features
 
+# FIXME: change to match your project compilation units
 add_subdirectory(project-lib)
 add_subdirectory(project-bin)
 
