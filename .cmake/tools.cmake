@@ -39,3 +39,27 @@ if (USE_CLANG_TIDY AND CLANG_TIDY)
     set(CMAKE_${LANG}_CLANG_TIDY ${CLANG_TIDY})
   endforeach()
 endif()
+
+# ---- sanitizers ----
+# This is a list of llvm sanitizers used by declaring the USE_SANITIZERS CMake
+# variable as string containing any of:
+#  * Address
+#  * Memory
+#  * MemoryWithOrigins
+#  * Undefined
+#  * Thread
+#  * Leak
+#  * CFI
+# Multiple values are allowed, e.g. `-DUSE_SANITIZERS=Address,Leak`, but some
+# sanitizers cannot be combined together.
+
+set(USE_SANITIZERS "" CACHE STRING "List which llvm sanitizers to use")
+
+if(USE_SANITIZERS)
+  # See https://github.com/StableCoder/cmake-scripts for more info.
+  CPMAddPackage(
+    GITHUB_REPOSITORY "StableCoder/cmake-scripts" GIT_TAG "22.01")
+
+  include(${cmake-scripts_SOURCE_DIR}/sanitizers.cmake)
+
+endif()
