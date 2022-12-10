@@ -1,6 +1,6 @@
 
-#ifndef __HH_THD__WAIT_LOCK_
-#define __HH_THD__WAIT_LOCK_
+#ifndef THREAD_TOOLS_WAIT_LOCK_HH
+#define THREAD_TOOLS_WAIT_LOCK_HH
 
 #include <memory>
 #include <mutex>
@@ -30,7 +30,7 @@ namespace thd
         {
             friend wait_lock;
 
-            explicit async(std::weak_ptr<data> const&);
+            explicit async(std::weak_ptr<data> data_ptr);
 
         public:
             virtual ~async() = default;
@@ -39,9 +39,9 @@ namespace thd
 
             void wait();
             template <typename TimeSpan>
-            bool wait_for(TimeSpan const&);
+            bool wait_for(TimeSpan const& time_span);
             template <typename TimePoint>
-            bool wait_until(TimePoint const&);
+            bool wait_until(TimePoint const& time_point);
 
         private:
             std::weak_ptr<data> m_DataPtr;
@@ -55,9 +55,9 @@ namespace thd
 
         void wait();
         template <typename TimeSpan>
-        bool wait_for(TimeSpan const&);
+        bool wait_for(TimeSpan const& time_span);
         template <typename TimePoint>
-        bool wait_until(TimePoint const&);
+        bool wait_until(TimePoint const& time_point);
 
     private:
         std::shared_ptr<data> m_DataPtr = std::make_shared<data>();
@@ -86,26 +86,26 @@ namespace thd
 
     inline void wait_lock::notify_one()
     {
-        std::unique_lock lock {m_DataPtr->m_Mutex};
+        std::unique_lock<std::mutex> lock {m_DataPtr->m_Mutex};
         m_DataPtr->m_CV.notify_one();
     }
 
     inline void wait_lock::notify_all()
     {
-        std::unique_lock lock {m_DataPtr->m_Mutex};
+        std::unique_lock<std::mutex> lock {m_DataPtr->m_Mutex};
         m_DataPtr->m_CV.notify_all();
     }
 
     inline void wait_lock::wait()
     {
-        std::unique_lock lock {m_DataPtr->m_Mutex};
+        std::unique_lock<std::mutex> lock {m_DataPtr->m_Mutex};
         m_DataPtr->m_CV.wait(lock);
     }
 
     template <typename TimeSpan>
     inline bool wait_lock::wait_for(TimeSpan const& time_span)
     {
-        std::unique_lock lock {m_DataPtr->m_Mutex};
+        std::unique_lock<std::mutex> lock {m_DataPtr->m_Mutex};
         auto status = m_DataPtr->m_CV.wait_for(lock,time_span);
         return status = std::cv_status::no_timeout;
     }
@@ -113,15 +113,15 @@ namespace thd
     template <typename TimePoint>
     inline bool wait_lock::wait_until(TimePoint const& time_point)
     {
-        std::unique_lock lock {m_DataPtr->m_Mutex};
+        std::unique_lock<std::mutex> lock {m_DataPtr->m_Mutex};
         auto status = m_DataPtr->m_CV.wait_until(lock,time_point);
         return status = std::cv_status::no_timeout;
     }
 
 // thd::wait_lock::async
 
-    inline thd::wait_lock::async::async(std::weak_ptr<data> const& data_ptr)
-        : m_DataPtr{data_ptr}
+    inline thd::wait_lock::async::async(std::weak_ptr<data> data_ptr)
+        : m_DataPtr{std::move(data_ptr)}
     {
     }
 
@@ -132,14 +132,14 @@ namespace thd
 
     inline void thd::wait_lock::async::wait()
     {
-        std::unique_lock lock {m_DataPtr.lock()->m_Mutex};
+        std::unique_lock<std::mutex> lock {m_DataPtr.lock()->m_Mutex};
         m_DataPtr.lock()->m_CV.wait(lock);
     }
 
     template <typename TimeSpan>
     inline bool thd::wait_lock::async::wait_for(TimeSpan const& time_span)
     {
-        std::unique_lock lock {m_DataPtr.lock()->m_Mutex};
+        std::unique_lock<std::mutex> lock {m_DataPtr.lock()->m_Mutex};
         auto status = m_DataPtr.lock()->m_CV.wait_for(lock,time_span);
         return status = std::cv_status::no_timeout;
     }
@@ -147,11 +147,11 @@ namespace thd
     template <typename TimePoint>
     inline bool thd::wait_lock::async::wait_until(TimePoint const& time_point)
     {
-        std::unique_lock lock {m_DataPtr.lock()->m_Mutex};
+        std::unique_lock<std::mutex> lock {m_DataPtr.lock()->m_Mutex};
         auto status = m_DataPtr.lock()->m_CV.wait_until(lock,time_point);
         return status = std::cv_status::no_timeout;
     }
 
 } // namespace thd
 
-#endif /* __HH_THD__WAIT_LOCK_ */
+#endif /* THREAD_TOOLS_WAIT_LOCK_HH */

@@ -29,7 +29,6 @@ Checks: '-*,
     clang-analyzer-*,
 
     llvm-header-guard,
-    llvm-include-order,
     llvm-namespace-comment,
 
     google-explicit-constructor,
