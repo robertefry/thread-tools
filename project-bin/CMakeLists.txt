@@ -16,8 +16,13 @@ add_custom_target(run-${BINARY_NAME}
 
 # ---- compiler targets ----
 
-target_include_directories(${BINARY_NAME} PUBLIC "include")
-target_include_directories(${BINARY_NAME} PRIVATE "src")
+target_include_directories(${BINARY_NAME}
+  PUBLIC
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+    $<INSTALL_INTERFACE:include>
+  PRIVATE
+    ${CMAKE_CURRENT_SOURCE_DIR}/src
+)
 
 file(GLOB_RECURSE BINARY_SOURCES
   "src/*.c" "src/*.cc" "src/*.cpp" "src/*.cxx")

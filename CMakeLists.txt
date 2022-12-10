@@ -30,6 +30,19 @@ include(.cmake/tools.cmake) # toolkit for buildsystem features
 add_subdirectory(project-lib)
 add_subdirectory(project-bin)
 
+# ---- project installable targets ----
+# this allows users to install and find the library via `find_package`.
+CPMAddPackage("gh:TheLartians/PackageProject.cmake@1.10.0")
+
+# FIXME: change to match your project packages
+packageProject(
+  NAME "project-lib"
+  VERSION ${PROJECT_VERSION}
+  NAMESPACE ${PROJECT_NAME}
+  BINARY_DIR ${PROJECT_BINARY_DIR}
+  COMPATIBILITY SameMajorVersion
+)
+
 # ---- cmake & compiler options ----
 
 # dissallow in-source builds
