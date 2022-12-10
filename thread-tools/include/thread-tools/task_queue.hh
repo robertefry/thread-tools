@@ -53,7 +53,7 @@ namespace thd
         template <typename t_func, typename... t_args>
         auto push_task(t_func&& func, t_args&&... args)
         {
-            using t_return = std::invoke_result<t_func,t_args...>::type;
+            using t_return = typename std::invoke_result<t_func,t_args...>::type;
             using t_executor = executor<t_return(t_args...)>;
 
             auto executor = std::make_unique<t_executor>(
